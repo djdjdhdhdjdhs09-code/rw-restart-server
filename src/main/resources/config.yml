@@ -1,0 +1,49 @@
+# RW Restart Server
+# Messages use MiniMessage format. <seconds> = seconds remaining.
+# Colors: <red>, <yellow>, <green>, <gold>, <bold> ... or hex like <#ff8800>
+
+# How many seconds players are warned before the server stops.
+countdown-seconds: 30
+
+# If true and nobody is online, stop immediately without waiting.
+skip-if-empty: false
+
+# Typing "stop now" skips the countdown (emergency use).
+bypass-argument: now
+
+# Commands that start the countdown instead of stopping right away.
+intercepted-commands:
+  - stop
+  - restart
+
+# Chat message: only sent at these remaining seconds (avoids spam).
+chat:
+  enabled: true
+  at: [30, 20, 10, 5, 4, 3, 2, 1]
+
+# Action bar text above the hotbar: shown every second.
+actionbar:
+  enabled: true
+
+# Big title in the middle of the screen: shown every second once remaining <= from.
+title:
+  enabled: true
+  from: 10
+
+# Sound played every second once remaining <= from.
+sound:
+  enabled: true
+  from: 10
+  name: block.note_block.pling
+  volume: 1.0
+  pitch: 1.0
+
+messages:
+  chat: "<yellow>[Server] Restarting in <red><seconds></red> seconds."
+  actionbar: "<red>Server restarting in <seconds>s"
+  title: "<red><bold><seconds>"
+  subtitle: "<yellow>Server is restarting"
+  kick: "<yellow>Server is restarting. Please rejoin in a moment."
+  cancelled: "<green>[Server] Restart cancelled."
+  already-running: "<red>A restart countdown is already running. Use /cancelrestart to cancel it."
+  not-running: "<red>No restart countdown is running."
