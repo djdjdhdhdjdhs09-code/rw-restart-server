@@ -1,1 +1,13 @@
-
+name: RWRestartServer
+version: 1.0.0
+main: com.restartcountdown.RestartCountdown
+api-version: "1.21.11"
+description: Counts down for players before the server stops or restarts.
+commands:
+  cancelrestart:
+    description: Cancel the running restart countdown.
+    permission: restartcountdown.admin
+permissions:
+  restartcountdown.admin:
+    description: Allows cancelling the countdown and using /stop in game.
+    default: op
