@@ -31,6 +31,9 @@ public final class RestartCountdown extends JavaPlugin implements Listener {
     private static final MiniMessage MM = MiniMessage.miniMessage();
 
     private BukkitTask task;
+    private BukkitTask animTask;
+    private int animStep;
+    private int total;
     private int remaining;
     private boolean shuttingDown;
     private boolean soundWarned;
@@ -43,9 +46,17 @@ public final class RestartCountdown extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
+        stopTasks();
+    }
+
+    private void stopTasks() {
         if (task != null) {
             task.cancel();
             task = null;
+        }
+        if (animTask != null) {
+            animTask.cancel();
+            animTask = null;
         }
     }
 
@@ -103,97 +114,3 @@ public final class RestartCountdown extends JavaPlugin implements Listener {
                 .map(s -> s.toLowerCase(Locale.ROOT))
                 .toList();
     }
-
-    // ---- Countdown ------------------------------------------------------------
-
-    private void start(CommandSender starter) {
-        remaining = Math.max(1, getConfig().getInt("countdown-seconds", 30));
-        getLogger().info("Restart countdown started by " + starter.getName() + " (" + remaining + "s).");
-        task = getServer().getScheduler().runTaskTimer(this, this::tick, 0L, 20L);
-    }
-
-    private void tick() {
-        if (remaining <= 0) {
-            finish();
-            return;
-        }
-        announce(remaining);
-        remaining--;
-    }
-
-    private void announce(int seconds) {
-        FileConfiguration c = getConfig();
-        List<Player> players = List.copyOf(getServer().getOnlinePlayers());
-
-        if (c.getBoolean("chat.enabled", true) && c.getIntegerList("chat.at").contains(seconds)) {
-            Component chat = fmt("chat", seconds);
-            getServer().getConsoleSender().sendMessage(chat);
-            players.forEach(p -> p.sendMessage(chat));
-        }
-
-        if (c.getBoolean("actionbar.enabled", true)) {
-            Component bar = fmt("actionbar", seconds);
-            players.forEach(p -> p.sendActionBar(bar));
-        }
-
-        if (c.getBoolean("title.enabled", true) && seconds <= c.getInt("title.from", 10)) {
-            Title title = Title.title(
-                    fmt("title", seconds),
-                    fmt("subtitle", seconds),
-                    Title.Times.times(Duration.ZERO, Duration.ofMillis(900), Duration.ofMillis(100)));
-            players.forEach(p -> p.showTitle(title));
-        }
-
-        if (c.getBoolean("sound.enabled", true) && seconds <= c.getInt("sound.from", 10)) {
-            try {
-                Sound sound = Sound.sound(
-                        Key.key(c.getString("sound.name", "block.note_block.pling")),
-                        Sound.Source.MASTER,
-                        (float) c.getDouble("sound.volume", 1.0),
-                        (float) c.getDouble("sound.pitch", 1.0));
-                players.forEach(p -> p.playSound(sound));
-            } catch (RuntimeException ex) {
-                if (!soundWarned) {
-                    soundWarned = true;
-                    getLogger().warning("Invalid sound.name in config.yml: " + ex.getMessage());
-                }
-            }
-        }
-    }
-
-    private void finish() {
-        if (task != null) {
-            task.cancel();
-            task = null;
-        }
-        shuttingDown = true;
-        Component kick = fmt("kick", 0);
-        for (Player p : List.copyOf(getServer().getOnlinePlayers())) {
-            p.kick(kick);
-        }
-        getLogger().info("Countdown finished, stopping the server.");
-        getServer().shutdown();
-    }
-
-    // ---- /cancelrestart -------------------------------------------------------
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (task == null) {
-            sender.sendMessage(fmt("not-running", 0));
-            return true;
-        }
-        task.cancel();
-        task = null;
-        getServer().broadcast(fmt("cancelled", 0));
-        getLogger().info("Restart countdown cancelled by " + sender.getName() + ".");
-        return true;
-    }
-
-    // ---- Helpers --------------------------------------------------------------
-
-    private Component fmt(String key, int seconds) {
-        String raw = getConfig().getString("messages." + key, "");
-        return MM.deserialize(raw, Placeholder.unparsed("seconds", Integer.toString(seconds)));
-    }
-  }
