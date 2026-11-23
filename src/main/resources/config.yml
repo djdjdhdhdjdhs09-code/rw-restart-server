@@ -1,9 +1,8 @@
 # RW Restart Server
 # Messages use MiniMessage format. <seconds> = seconds remaining.
-# Colors: <red>, <yellow>, <green>, <gold>, <bold> ... or hex like <#ff8800>
 
 # How many seconds players are warned before the server stops.
-countdown-seconds: 30
+countdown-seconds: 50
 
 # If true and nobody is online, stop immediately without waiting.
 skip-if-empty: false
@@ -16,19 +15,23 @@ intercepted-commands:
   - stop
   - restart
 
-# Chat message: only sent at these remaining seconds (avoids spam).
+# Small chat text: OFF (only the big title is used).
 chat:
-  enabled: true
-  at: [30, 20, 10, 5, 4, 3, 2, 1]
+  enabled: false
+  at: [50, 30, 10, 5, 3, 2, 1]
 
-# Action bar text above the hotbar: shown every second.
+# Small text above the hotbar: OFF.
 actionbar:
-  enabled: true
+  enabled: false
 
-# Big title in the middle of the screen: shown every second once remaining <= from.
+# Big animated title in the middle of the screen, from the start (50).
+# speed = how fast the colors run back and forth (bigger = faster).
 title:
   enabled: true
-  from: 10
+  from: 50
+  speed: 0.35
+  # From this many seconds left, the colors turn red.
+  danger-from: 10
 
 # Sound played every second once remaining <= from.
 sound:
@@ -41,9 +44,11 @@ sound:
 messages:
   chat: "<yellow>[Server] Restarting in <red><seconds></red> seconds."
   actionbar: "<red>Server restarting in <seconds>s"
-  title: "<red><bold><seconds>"
-  subtitle: "<yellow>Server is restarting"
-  kick: "<yellow>Server is restarting. Please rejoin in a moment."
+  title: "<bold><gradient:#00e676:#ffffff:#00e676:{phase}>« PANDA MC RESTART SERVER »</gradient></bold>"
+  subtitle: "<bar> <gradient:#ffffff:#00e676:#ffffff:{phase}><bold><seconds></bold> seconds</gradient>"
+  title-danger: "<bold><gradient:#ff3d3d:#ffffff:#ff3d3d:{phase}>« PANDA MC RESTART SERVER »</gradient></bold>"
+  subtitle-danger: "<bar> <gradient:#ffffff:#ff3d3d:#ffffff:{phase}><bold><seconds></bold> seconds</gradient>"
+  kick: "<gradient:#f6d365:#fda085><bold>Panda MC is restarting.</bold></gradient>\n<gray>Please rejoin in a moment."
   cancelled: "<green>[Server] Restart cancelled."
   already-running: "<red>A restart countdown is already running. Use /cancelrestart to cancel it."
   not-running: "<red>No restart countdown is running."
