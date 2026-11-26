@@ -44,9 +44,9 @@ sound:
 messages:
   chat: "<yellow>[Server] Restarting in <red><seconds></red> seconds."
   actionbar: "<red>Server restarting in <seconds>s"
-  title: "<bold><gradient:#00e676:#ffffff:#00e676:{phase}>« PANDA MC RESTART SERVER »</gradient></bold>"
+  title: "<bold><gradient:#00e676:#ffffff:#00e676:{phase}>« RESTART SERVER »</gradient></bold>"
   subtitle: "<bar> <gradient:#ffffff:#00e676:#ffffff:{phase}><bold><seconds></bold> seconds</gradient>"
-  title-danger: "<bold><gradient:#ff3d3d:#ffffff:#ff3d3d:{phase}>« PANDA MC RESTART SERVER »</gradient></bold>"
+  title-danger: "<bold><gradient:#ff3d3d:#ffffff:#ff3d3d:{phase}>« RESTART SERVER »</gradient></bold>"
   subtitle-danger: "<bar> <gradient:#ffffff:#ff3d3d:#ffffff:{phase}><bold><seconds></bold> seconds</gradient>"
   kick: "<gradient:#f6d365:#fda085><bold>Panda MC is restarting.</bold></gradient>\n<gray>Please rejoin in a moment."
   cancelled: "<green>[Server] Restart cancelled."
